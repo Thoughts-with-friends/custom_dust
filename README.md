@@ -4,6 +4,10 @@
 
 [![Build and test status](https://github.com/kelpsyberry/dust/actions/workflows/.github/workflows/run-clippy-and-test.yml/badge.svg?branch=main&event=push)](https://github.com/kelpsyberry/dust/actions/workflows/run-clippy-and-test.yml?query=branch%3Amain+event%3Apush)
 
+## To do
+1. Volume Control
+2. GUI Switch (such as tauri, if possible)
+
 ## Prebuilt binaries and web version
 
 [![Web deploy status](https://github.com/kelpsyberry/dust/actions/workflows/.github/workflows/deploy-web.yml/badge.svg?branch=main&event=push)](https://github.com/kelpsyberry/dust/actions/workflows/deploy-web.yml?query=branch%3Amain+event%3Apush)
