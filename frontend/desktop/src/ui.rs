@@ -890,6 +890,7 @@ impl FbTexture {
     }
 }
 
+// desktop/main,rs ui::main() used
 pub fn main() {
     let panic_hook = panic::take_hook();
     panic::set_hook(Box::new(move |info| {
@@ -910,7 +911,7 @@ pub fn main() {
         wgpu::Features::DEPTH32FLOAT_STENCIL8,
         window::AdapterSelection::Auto(wgpu::PowerPreference::LowPower),
         config.config.window_size,
-        #[cfg(target_os = "macos")]
+        #[cfg(target_os = "macos")]  // == #ifdef
         config!(config.config, title_bar_mode).system_title_bar_hidden(),
     ));
     // TODO: Allow custom styles
