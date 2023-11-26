@@ -38,6 +38,7 @@ mod input;
 mod emu;
 mod ui;
 
+// main process
 fn main() {
     ui::main();
 }

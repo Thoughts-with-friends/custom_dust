@@ -25,6 +25,7 @@ pub enum AdapterSelection {
     Manual(wgpu::Backends, Box<dyn FnMut(&wgpu::Adapter) -> bool>),
 }
 
+// #[derive (Debug)]
 pub struct GfxState {
     surface: wgpu::Surface,
     adapter: wgpu::Adapter,
@@ -187,6 +188,7 @@ impl GfxState {
     }
 }
 
+// #[derive (Debug)]
 pub struct ImGuiState {
     pub gfx: imgui_wgpu::Renderer,
     pub winit: imgui_winit_support::WinitPlatform,
@@ -322,6 +324,7 @@ pub struct Builder {
     pub imgui: imgui::Context,
 }
 
+// #[derive (Debug)]
 pub struct Window {
     window: WinitWindow,
     is_hidden: bool,

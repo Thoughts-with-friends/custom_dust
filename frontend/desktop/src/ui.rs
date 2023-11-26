@@ -288,6 +288,7 @@ impl UiState {
                 if !warnings.is_empty() {
                     config_warning!("{}", format_list!(warnings));
                 }
+
                 self.start(
                     config,
                     launch_config,
@@ -311,6 +312,7 @@ impl UiState {
 
     fn load_firmware(&mut self, config: &mut Config, window: &window::Window) {
         self.stop(config, window);
+
         match config::Launch::new(&config.config, true) {
             Ok((launch_config, warnings)) => {
                 if !warnings.is_empty() {
@@ -335,6 +337,7 @@ impl UiState {
         }
     }
 
+    #[track_caller]
     fn create_renderers(
         window: &window::Window,
         config: &config::Config,
@@ -348,6 +351,7 @@ impl UiState {
     ) {
         let mut renderer_2d_kind = config!(config, renderer_2d_kind);
         let renderer_3d_kind = config!(config, renderer_3d_kind);
+
         if renderer_3d_kind == Renderer3dKind::Wgpu {
             renderer_2d_kind = Renderer2dKind::WgpuLockstepScanlines;
         }
@@ -368,12 +372,17 @@ impl UiState {
                         }
 
                         Renderer3dKind::Wgpu => {
+                            panic!("OK");
+
+                            // Usize::Max / 2 == Arc::Max
+                            // Too many Arc clones.
                             let (tx_3d, rx_3d, renderer_3d_channels, rx_3d_2d_data) =
                                 dust_wgpu_3d::threaded::init(
                                     Arc::clone(window.gfx().device()),
                                     Arc::clone(window.gfx().queue()),
                                     resolution_scale_shift,
                                 );
+
                             (
                                 Box::new(tx_3d) as Box<dyn engine_3d::RendererTx + Send>,
                                 dust_wgpu_2d::Renderer3dRx::Accel {
@@ -450,6 +459,7 @@ impl UiState {
         )
     }
 
+    // Read ROM and Start emulation
     fn start(
         &mut self,
         config: &Config,
@@ -539,6 +549,7 @@ impl UiState {
                     }
                     entry.save_type
                 });
+
             Some(emu::DsSlot {
                 rom,
                 save_type,
@@ -782,8 +793,8 @@ impl UiState {
 }
 
 struct FbTexture {
-    id: imgui::TextureId,
-    is_view: bool,
+    id: imgui::TextureId, // texture ID
+    is_view: bool,        // view ON/OFF
 }
 
 impl FbTexture {
@@ -911,9 +922,10 @@ pub fn main() {
         wgpu::Features::DEPTH32FLOAT_STENCIL8,
         window::AdapterSelection::Auto(wgpu::PowerPreference::LowPower),
         config.config.window_size,
-        #[cfg(target_os = "macos")]  // == #ifdef
+        #[cfg(target_os = "macos")] // == #ifdef
         config!(config.config, title_bar_mode).system_title_bar_hidden(),
     ));
+
     // TODO: Allow custom styles
     window_builder.apply_default_imgui_style();
 
@@ -937,6 +949,7 @@ pub fn main() {
         FrameData::default(),
     ]);
 
+    // new fb texture
     let fb_texture = FbTexture::new(&window_builder.window);
 
     let mut state = UiState {
@@ -1016,7 +1029,6 @@ pub fn main() {
                     false
                 },
             );
-
             // Process input actions
             for action in input_actions {
                 match action {
@@ -1037,7 +1049,6 @@ pub fn main() {
                     }
                 }
             }
-
             // Process configuration changes
             {
                 state.update_menu_bar(&config.config, window);
@@ -1764,7 +1775,6 @@ pub fn main() {
                         winit::window::Icon::from_rgba(rgba, 32, 32).ok()
                     }));
             }
-
             state.update_title(&config.config, window);
 
             window::ControlFlow::Continue
@@ -1794,6 +1804,7 @@ pub fn main() {
                 })],
                 depth_stencil_attachment: None,
             });
+
             window::ControlFlow::Continue
         },
         move |window, (mut config, mut state)| {
