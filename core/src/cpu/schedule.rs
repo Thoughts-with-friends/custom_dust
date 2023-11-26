@@ -24,7 +24,8 @@ pub trait ScheduleConst {
     fn timer_event_slot(i: timers::Index) -> Self::EventSlotIndex;
 }
 
-pub trait Schedule: ~const ScheduleConst {
+// pub trait Schedule: ~const ScheduleConst {
+pub trait Schedule: ScheduleConst {
     fn cur_time(&self) -> Self::Timestamp;
     fn set_cur_time(&mut self, value: Self::Timestamp);
     #[inline]
